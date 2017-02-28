@@ -21,6 +21,7 @@ public class DownloadImagesService extends IntentService {
         if (intent != null) {
             ArrayList<String> files = new ArrayList<String>();
             ArrayList<String> http_t = intent.getStringArrayListExtra("http_t");
+            //ArrayList<String> http_o = intent.getStringArrayListExtra("http_o");
             if (http_t != null && http_t.size() > 0) {
                 try {
                     for (int i = 0; i < http_t.size(); i++) {
@@ -38,6 +39,7 @@ public class DownloadImagesService extends IntentService {
             }
             Intent intent2 = new Intent(this.getApplicationContext(), MainActivity.class);
             intent2.putExtra("files", files);
+            //intent2.putExtra("http_o", http_o);
             intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent2);
         }

@@ -46,7 +46,9 @@ public class MainActivity extends AppCompatActivity {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
         rvItems.setLayoutManager(gridLayoutManager);
 
-        adapter = new ImagesAdapter(myImages);
+        adapter = new ImagesAdapter(myImages, http_o);
+        Log.d("MainActivity onCreate()", "HERE http_o has size = " + http_o.size());
+        Log.d("MainActivity onCreate()", "HERE myImages has size = " + myImages.size());
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -107,19 +109,28 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonPart = jsonArray.getJSONObject(i);
                 try {
-                    String afterDecode = URLDecoder.decode(jsonPart.getString("url_t"), "UTF-8");
-                    http_t.add(i,afterDecode);
+                    String afterDecode_t = URLDecoder.decode(jsonPart.getString("url_t"), "UTF-8");
+                    http_t.add(i,afterDecode_t);
+                    String string = jsonPart.optString("url_o");
+                    if (string != null ) {
+                        String afterDecode_o = URLDecoder.decode(string, "UTF-8");
+                        http_o.add(i, afterDecode_o);
+                        adapter.notifyDataSetChanged();
+                        Log.d("MainActivity extractInf", "HERE http_o = " + afterDecode_o);
+                    } else {
+                        http_o.add(i,"");
+                        adapter.notifyDataSetChanged();
+                    }
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                //http_o.add(i,jsonPart.getString("url_o"));
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    // A click on the button starts this service
+    // A click on the button starts the service
     public void getSharkFeed(View view) {
         Intent intent = new Intent(this, SharkFeedService.class);
         startService(intent);

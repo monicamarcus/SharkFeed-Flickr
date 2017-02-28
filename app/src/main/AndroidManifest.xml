@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -25,7 +26,9 @@
             android:exported="false" />
         <service
             android:name=".DownloadImagesService"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <activity android:name=".DetailActivity"></activity>
     </application>
 
 </manifest>
