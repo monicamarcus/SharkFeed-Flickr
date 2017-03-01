@@ -14,7 +14,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:srcCompat="@drawable/product_logo"
+        android:src="@drawable/product_logo"
         android:layout_centerHorizontal="true"
         android:id="@+id/imageView" />
 </RelativeLayout>

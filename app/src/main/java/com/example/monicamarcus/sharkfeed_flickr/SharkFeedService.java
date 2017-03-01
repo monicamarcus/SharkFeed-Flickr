@@ -6,14 +6,13 @@ import android.content.Intent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 
 public class SharkFeedService extends IntentService {
-    public static final String myURL = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=949e98778755d1982f537d56236bbb42&text=shark&format=json&nojsoncallback=1&page=1&extras=url_t,url_c,url_l,url_o";
+    public static final String myURL1 = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=949e98778755d1982f537d56236bbb42&text=shark&format=json&nojsoncallback=1&page=";
+    public static final String myURL2 =  "&extras=url_t,url_c,url_l,url_o";
 
     public SharkFeedService() {
         super("SharkFeedService");
@@ -22,7 +21,8 @@ public class SharkFeedService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
-            String jsonResult = getJsonData(myURL);
+            int page = intent.getIntExtra("offset", 1);
+            String jsonResult = getJsonData(myURL1 + page + myURL2);
             Intent intent1 = new Intent(this.getApplicationContext(), MainActivity.class);
             intent1.putExtra("jsonData", jsonResult);
             intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

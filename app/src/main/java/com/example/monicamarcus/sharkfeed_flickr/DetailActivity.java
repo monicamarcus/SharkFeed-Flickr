@@ -1,10 +1,10 @@
 package com.example.monicamarcus.sharkfeed_flickr;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -19,6 +19,8 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+//        ActionBar actionBar = getActionBar();
+//        actionBar.setDisplayHomeAsUpEnabled(true);
         image = (ImageView) findViewById(R.id.imageView);
         Intent intent = getIntent();
         String url = intent.getStringExtra("url");

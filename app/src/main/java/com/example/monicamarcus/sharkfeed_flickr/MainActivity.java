@@ -3,12 +3,10 @@ package com.example.monicamarcus.sharkfeed_flickr;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -32,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private Button sharkFeedButton;
     private ImagesAdapter adapter = null;
 
+    private int offset = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         // Configure the RecyclerView
         rvItems = (RecyclerView) findViewById(R.id.images_recycler);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,4);
         rvItems.setLayoutManager(gridLayoutManager);
 
         Intent intent = getIntent();
@@ -99,6 +99,10 @@ public class MainActivity extends AppCompatActivity {
     // This method probably sends out a network request and appends new data items to your adapter.
     public void loadNextDataFromApi(int offset) {
         // Send an API request to retrieve appropriate paginated data
+        Intent intent = new Intent(this, SharkFeedService.class);
+        intent.putExtra("offset", ++offset);
+        startService(intent);
+        scrollListener.resetState();
         //  --> Send the request including an offset value (i.e `page`) as a query parameter.
         //  --> Deserialize and construct new model objects from the API response
         //  --> Append the new data objects to the existing set of items inside the array of items
@@ -134,8 +138,11 @@ public class MainActivity extends AppCompatActivity {
 
     // A click on the button starts the service
     public void getSharkFeed(View view) {
-        Intent intent = new Intent(this, SharkFeedService.class);
-        startService(intent);
+        //Intent intent = new Intent(this, SharkFeedService.class);
+        //startService(intent);
+        //
+        //request to download the first page
+        loadNextDataFromApi(0);
     }
 }
 

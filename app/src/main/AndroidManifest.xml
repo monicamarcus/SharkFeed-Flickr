@@ -28,7 +28,9 @@
             android:name=".DownloadImagesService"
             android:exported="false" />
 
-        <activity android:name=".DetailActivity"></activity>
+        <activity
+            android:name=".DetailActivity">
+        </activity>
     </application>
 
 </manifest>
