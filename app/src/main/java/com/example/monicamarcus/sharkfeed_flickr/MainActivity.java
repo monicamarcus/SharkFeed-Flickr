@@ -46,35 +46,40 @@ public class MainActivity extends AppCompatActivity {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
         rvItems.setLayoutManager(gridLayoutManager);
 
-        adapter = new ImagesAdapter(myImages, http_o);
-        Log.d("MainActivity onCreate()", "HERE http_o has size = " + http_o.size());
-        Log.d("MainActivity onCreate()", "HERE myImages has size = " + myImages.size());
-
         Intent intent = getIntent();
         if (intent != null) {
             String jsonData = intent.getStringExtra("jsonData");
             if (jsonData != null) {
                 extractInfo(jsonData);
-                if (http_t != null) {
+                if (http_t != null && http_o != null) {
                     Intent intent1 = new Intent(this, DownloadImagesService.class);
                     intent1.putExtra("http_t", http_t);
+                    intent1.putExtra("http_o", http_o);
                     startService(intent1);
                 }
             } else {
                 Log.d("MainActivity onCreate()", "jsonData = " + jsonData);
             }
+            http_o = intent.getStringArrayListExtra("http_o");
             ArrayList<String> filePaths = intent.getStringArrayListExtra("files");
             for (int i = 0; filePaths != null && i < filePaths.size(); i++) {
-                //File sd = Environment.getExternalStorageDirectory();
                 File image = new File(filePaths.get(i));
                 image.setReadable(true);
                 BitmapFactory.Options bmOptions = new BitmapFactory.Options();
                 Bitmap bitmap = BitmapFactory.decodeFile(image.getPath(), bmOptions);
-                //bitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
                 myImages.add(bitmap);
-                adapter.notifyDataSetChanged();
             }
         }
+
+        adapter = new ImagesAdapter(myImages, http_o, new ImagesAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(String url) {
+                Intent intent = new Intent(getApplicationContext(),DetailActivity.class);
+                intent.putExtra("url", url);
+                startActivity(intent);
+            }
+        });
+
         rvItems.setAdapter(adapter);
 
         // Retain an instance so that you can call `resetState()` for fresh searches
@@ -115,11 +120,8 @@ public class MainActivity extends AppCompatActivity {
                     if (string != null ) {
                         String afterDecode_o = URLDecoder.decode(string, "UTF-8");
                         http_o.add(i, afterDecode_o);
-                        adapter.notifyDataSetChanged();
-                        Log.d("MainActivity extractInf", "HERE http_o = " + afterDecode_o);
                     } else {
                         http_o.add(i,"");
-                        adapter.notifyDataSetChanged();
                     }
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
@@ -135,6 +137,5 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SharkFeedService.class);
         startService(intent);
     }
-
 }
 

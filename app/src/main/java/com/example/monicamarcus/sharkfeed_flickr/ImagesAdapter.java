@@ -30,25 +30,19 @@ import static com.example.monicamarcus.sharkfeed_flickr.MyApplication.getAppCont
 class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder> {
 
     public interface OnItemClickListener {
-        void onItemClick(Bitmap image);
+        void onItemClick(String url);
     }
 
-    private ArrayList<Bitmap> images;
-    private ArrayList<String> http_o; // = new ArrayList<String>();
+    private static ArrayList<Bitmap> images;
+    private static ArrayList<String> http_o;
     private static String clickedImageUrl;
-    private OnItemClickListener listener = null;
-    private static ImageView imageView;
+    private OnItemClickListener listener;
 
-    public ImagesAdapter(ArrayList<Bitmap> images, ArrayList<String> http_o) { //, OnItemClickListener listener) {
+    public ImagesAdapter(ArrayList<Bitmap> images, ArrayList<String> http_o, OnItemClickListener listener) {
         this.images = images;
         this.http_o = http_o;
-        //this.listener = listener;
+        this.listener = listener;
     }
-
-    public ImagesAdapter(ArrayList<Bitmap> images) {
-        this.images = images;
-    }
-
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private CardView cardView;
@@ -57,30 +51,31 @@ class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder> {
             cardView = v;
         }
         public void bind(final Bitmap image, final OnItemClickListener listener) {
-            if (clickedImageUrl != null && clickedImageUrl.length() > 0)
-                Glide.with(itemView.getContext()).load(clickedImageUrl).into(imageView);
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    listener.onItemClick(image);
-//                }
-//            });
-//        }
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getAppContext(), DetailActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte[] byteArray = stream.toByteArray();
-                    Bundle bundle = new Bundle();
-                    bundle.putByteArray("image",byteArray);
-                    intent.putExtras(bundle);
-                    MyApplication.getAppContext().startActivity(intent);
+                    int index = images.indexOf(image);
+                    clickedImageUrl = http_o.get(index);
+                    listener.onItemClick(clickedImageUrl);
                 }
             });
         }
+//            itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Intent intent = new Intent(getAppContext(), DetailActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                    image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+//                    byte[] byteArray = stream.toByteArray();
+//                    Bundle bundle = new Bundle();
+//                    bundle.putByteArray("image",byteArray);
+//                    intent.putExtras(bundle);
+//                    MyApplication.getAppContext().startActivity(intent);
+//                }
+//            });
+//        }
     }
 
 
@@ -95,10 +90,9 @@ class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         if (http_o.size() > position) {
             clickedImageUrl = http_o.get(position);
-            Log.d("ImagesAdapter", "HERE position = " + position);
-        }
+        } else clickedImageUrl = "";
         CardView cardView = holder.cardView;
-        imageView = (ImageView) cardView.findViewById(R.id.image);
+        ImageView imageView = (ImageView) cardView.findViewById(R.id.image);
         Bitmap bitMap = images.get(position);
         imageView.setImageBitmap(bitMap);
         holder.bind(bitMap, listener);
@@ -109,3 +103,5 @@ class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder> {
         return images.size();
     }
 }
+
+//https://farm3.staticflickr.com/2919/33012502992_5290caa93d_o.jpg
